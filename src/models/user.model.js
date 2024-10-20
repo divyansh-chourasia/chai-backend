@@ -49,13 +49,17 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+//pre method check the status before saving the data.
+//bcrypt hashes the password 
+// arrow function is not used as they do not have access of "this"
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password")) return next(); 
 
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
+//checkes the password with bcrypt
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };

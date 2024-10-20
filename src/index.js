@@ -1,11 +1,13 @@
 // require ('dotenv').config({path: '/.env'})
-import dotenv from "dotenv";
+import dotenv from "dotenv"; // declare at the top so when the application loads, all the variables are available everywhere
 import connectDB from "./db/index.js";
+
+dotenv.config({ path: "./.env" }); // declare path of env variables 
+// dotenv.config({ path: "./env" }); // this should also work for some system
+// need to use this via experimental feature by adding some line in package.json  `-r dotenv/config --experimental-json-modules` 
 import { app } from "./app.js";
 
-// dotenv.config({ path: "./env" });
-dotenv.config({ path: "./.env" });
-
+//connect DB return a promise 
 connectDB()
   .then(() => {
     app.listen(process.env.PORT || 8000, () => {
@@ -14,9 +16,8 @@ connectDB()
   })
   .catch((err) => {
     console.log("Mongo DB connnection failed !!! ", err);
-  });
-
-
+  }); 
+ 
 
 
 

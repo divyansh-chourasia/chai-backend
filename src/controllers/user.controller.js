@@ -48,11 +48,11 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new ApiError(400, "fullName is required");
     } 
 */
-
+  // validation
   if (
     [fullName, email, username, password].some((field) => field?.trim() === "")
   ) {
-    throw new ApiError(400, "all fileds are required ");
+    throw new ApiError(400, "All fileds are required ");
   }
 
   const existedUser = await User.findOne({
@@ -63,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avatarLocalPath = req.files?.avatar[0]?.path; // console.log(avatarLocalPath)
-  //   const coverImageLocalPath = req.files?.coverImage[0]?.path; // this wont wotk if there is no coverimage
+  //   const coverImageLocalPath = req.files?.coverImage[0]?.path; // this wont work if there is no coverimage
   let coverImageLocalPath;
   if (
     req.files &&
@@ -124,7 +124,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // }
 
   const user = await User.findOne({
-    $or: [{ username }, { email }], // pick either username or pasword
+    $or: [{ username }, { email }], // pick either username or email 
   });
 
   if (!user) {
@@ -144,7 +144,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-
+ // for cookies, cookies will not be modified from browser
   const options = {
     httpOnly: true,
     secure: true,
@@ -169,7 +169,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
-    req.user._id,
+    req.user._id,    // user is comming from verifyjwt middleware
     {
       $set: {
         refreshToken: undefined,
@@ -216,10 +216,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       throw new ApiError(401, "refresh token is expired or used");
     }
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
+    const options = { httpOnly: true, secure: true, };
 
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
