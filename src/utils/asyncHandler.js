@@ -6,6 +6,8 @@ const asyncHandler = (requestHandler) => {
 
 export { asyncHandler };
 
+// HIGHER ORDER FUNCTION
+
 // const asyncHandler = () => {}
 // const asyncHandler = () => {()=>{}}
 // const asyncHandler = () => ()=>{}
